@@ -1,7 +1,30 @@
-//score
 
+
+//score
 let score = 0;
 let highScore = 0;
+
+
+function informBackend(buttonPressed, message) {
+    const requestBody = { buttonPressed: buttonPressed, message };
+  
+    return fetch('http://localhost:3000/jump', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // Add any other headers as needed
+      },
+      body: JSON.stringify(requestBody),
+    })
+    .then(response => response.json())
+    .then(data => data)
+    .catch(error => {
+      console.error('Error:', error);
+      throw error; // Re-throw the error for handling in the calling code
+    });
+  }
+  
+
 
 // Function to update the score
 function updateScore() {
@@ -58,6 +81,9 @@ const mario = document.querySelector('.mario');
 const pipe = document.querySelector('.pipe');
 
 const jump = () => {
+
+    const message = "Player jumped"; // Specify the message here
+    informBackend(true,message);
     mario.classList.add('jump');
 
     setTimeout(()=>{
@@ -80,6 +106,7 @@ const loop = setInterval(()=>{
         mario.src = './img/game-over.png'
         mario.style.width = '75px'
         mario.style.marginLeft = '50px'
+        informBackend(false,'Player Died x.x');
         resetScore();
 
         clearInterval(loop);
