@@ -15,7 +15,7 @@ app.post('/jump', (req, res) => {
   const { message } = req.body;
 
   // Do something with the information about the button press
-  console.log('Button Pressed:', message);
+  console.log('Action:', message);
 
   // Send a response if needed
   res.json({ message: 'Button press received successfully' });

@@ -80,11 +80,12 @@ resetScore();
 const mario = document.querySelector('.mario');
 const pipe = document.querySelector('.pipe');
 
-const jump = () => {
+const jump = async () => {
 
-    const message = "Player jumped"; // Specify the message here
-    informBackend(true,message);
     mario.classList.add('jump');
+    const message = "Player jumped"; // Specify the message here
+    await informBackend(true,message);
+    
 
     setTimeout(()=>{
         mario.classList.remove('jump');
