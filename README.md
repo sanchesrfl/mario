@@ -1,2 +1,2 @@
 # mario
-Game for educational purpose on web development 
+Game for educational purposes on web development 
