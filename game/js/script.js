@@ -77,14 +77,19 @@ resetScore();
 
 
 
-const mario = document.querySelector('.mario');
+const marioOne = document.querySelector('.mario-1');
+const marioTwo = document.querySelector('.mario-2');
 const pipe = document.querySelector('.pipe');
 
 const jump = async () => {
 
-    mario.classList.add('jump');
+    
     const message = "Player jumped"; // Specify the message here
     await informBackend(true,message);
+    
+    mario.classList.add('jump');
+    
+    
     
 
     setTimeout(()=>{
@@ -119,6 +124,6 @@ const loop = setInterval(()=>{
 },10)
 
 highScore = getHighScoreFromCookie();
-document.getElementById('high-score').innerText = highScore;
+document.getElementById('high-score-1').innerText = highScore;
 
 document.addEventListener('keydown', jump);
