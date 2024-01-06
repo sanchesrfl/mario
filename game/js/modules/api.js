@@ -55,3 +55,11 @@ export async function informBackendGameType(gameType) {
         throw error;
     });
 }
+
+export async function playerComm(){
+
+    /* WebSocket for players to exchange position/action and scores
+    throughout the gameplay.
+    */
+
+};

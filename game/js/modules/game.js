@@ -1,6 +1,6 @@
 
-import { informBackend } from './api';
-import { resetScore, increaseScore, updateHighScore, getHighScoreFromCookie } from './score';
+import { informBackend, playerComm } from './api';
+import { getHighScoreFromCookie, resetScore } from './score';
 
 
 
@@ -15,7 +15,7 @@ export async function jump(){
     }, 500);
 };
 
-export async function loopSinglePlayer(pipe, marioOne){
+export async function loop(pipe, mario){
 
     setInterval(() => {
         const pipePosition = pipe.offsetLeft;
@@ -43,64 +43,38 @@ export async function loopSinglePlayer(pipe, marioOne){
 }
 
 
-export async function loopMultiPlayer(pipe, marioOne, marioTwo){
-
-    setInterval(() => {
-        const pipePosition = pipe.offsetLeft;
-        const marioOnePosition = +window.getComputedStyle(marioOne).bottom.replace('px', '');
-        const marioTwoPosition = +window.getComputedStyle(marioTwo).bottom.replace('px', '');
-    
-        if (pipePosition <= 120 && pipePosition > 0 && marioPosition < 80) {
-            pipe.style.animation = 'none';
-            pipe.style.left = `${pipePosition}px`;
-    
-            mario.style.animation = 'none';
-            mario.style.bottom = `${marioPosition}px`;
-    
-            mario.src = './img/game-over.png';
-            mario.style.width = '75px';
-            mario.style.marginLeft = '50px';
-            informBackend(false, 'Player Died x.x');
-            resetScore();
-    
-            clearInterval(loop);
-        } else if (pipePosition <= 120 && pipePosition > 0 && marioPosition > 90) {
-            increaseScore();
-        }
-    }, 10);
-
-} 
-
 
 export function runGame(gameType){
 
     const pipe = document.querySelector('.pipe');
-
     const highScore = getHighScoreFromCookie(); //isso aqui vai pro banco de dados do servidor conectado ao historico do player/user;
-
+    const marioOne = document.querySelector('.mario-1');
+    
     document.getElementById('high-score-1').innerText = highScore;
-
-
-    if (gameType === "single") {
-
-        const marioOne = document.querySelector('.mario-1');
-        loopSinglePlayer(pipe, marioOne);
-    } 
+    loop(pipe, marioOne);
     
     if (gameType === "multi") {
-
-
-        const marioOne = document.querySelector('.mario-1');
         const marioTwo = document.querySelector('.mario-2');
-
-        loopMultiPlayer(pipe, marioOne, marioTwo);
-
+        const highScoreTwo = document.querySelector('high-score-2');
+        playerComm(marioTwo,highScoreTwo);
     }
 
-    
     // Attach event listener for the jump action
     document.addEventListener('keydown', jump);
 
-    
+}
+
+
+
+function startGame(gameType) {
+
+    resetScore();
+    // Use the gameType variable in your game logic
+    console.log(`Starting ${gameType} player game...`);
+
+    // Example: Notify the backend about the chosen game type
+    informBackendGameType(gameType);
+
+    runGame(gameType)
 
 }
