@@ -1,65 +1,54 @@
+class BackendCommunicator {
+    constructor(apiUrl) {
+        this.apiUrl = apiUrl || 'http://localhost:3000';
+    }
 
-export async function informBackend(buttonPressed, message) {
-    const requestBody = { buttonPressed: buttonPressed, message };
+    async makeRequest(endpoint, requestData) {
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Add any other headers as needed
+            },
+            body: JSON.stringify(requestData),
+        };
 
-    return fetch('http://localhost:3000/jump', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // Add any other headers as needed
-        },
-        body: JSON.stringify(requestBody),
-    })
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => {
-        console.error('Error:', error);
-        throw error;
-    });
+        try {
+            const response = await fetch(`${this.apiUrl}/${endpoint}`, requestOptions);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error(`Error in ${endpoint} request:`, error);
+            throw error;
+        }
+    }
+
+    async informBackend(buttonPressed, message) {
+        const requestData = { buttonPressed, message };
+        return this.makeRequest('jump', requestData);
+    }
+
+    async informBackendScore(score, highScore) {
+        const requestData = { score, highScore };
+        return this.makeRequest('score', requestData);
+    }
+
+    async informBackendGameType(gameType) {
+        const requestData = { gameType };
+        return this.makeRequest('game-type', requestData);
+    }
+
+    async playerComm() {
+        /* WebSocket for players to exchange position/action and scores
+        throughout the gameplay.
+        */
+    }
 }
 
-export async function informBackendScore(score, highScore) {
-    const requestBody = { score, highScore };
+export default backendCommunicator;
 
-    return fetch('http://localhost:3000/score', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // Add any other headers as needed
-        },
-        body: JSON.stringify(requestBody),
-    })
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => {
-        console.error('Error:', error);
-        throw error;
-    });
-}
-
-export async function informBackendGameType(gameType) {
-    const requestBody = { gameType };
-
-    return fetch('http://localhost:3000/game-type', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // Add any other headers as needed
-        },
-        body: JSON.stringify(requestBody),
-    })
-    .then(response => response.json())
-    .then(data => data)
-    .catch(error => {
-        console.error('Error:', error);
-        throw error;
-    });
-}
-
-export async function playerComm(){
-
-    /* WebSocket for players to exchange position/action and scores
-    throughout the gameplay.
-    */
-
-};
+// Example Usage:
+const backendCommunicator = new BackendCommunicator('http://localhost:3000');
+backendCommunicator.informBackend('press', 'Hello, server!')
+    .then(data => console.log(data))
+    .catch(error => console.error(error));

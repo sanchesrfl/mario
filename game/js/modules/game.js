@@ -1,5 +1,5 @@
 
-import { informBackend, playerComm } from './api';
+import BackendCommunicator from './api';
 import { getHighScoreFromCookie, resetScore } from './score';
 
 

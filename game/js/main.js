@@ -1,4 +1,3 @@
-import { informBackendGameType } from './modules/api';
 import { startGame } from './modules/game';
 
 // Call resetScore when the game starts
