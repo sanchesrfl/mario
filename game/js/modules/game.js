@@ -1,12 +1,12 @@
 
-import BackendCommunicator from './api';
-import { getHighScoreFromCookie, resetScore } from './score';
-
-
+import BackendCommunicator from './api.js';
+import { getHighScoreFromCookie, resetScore } from './score.js';
 
 export async function jump(){
     const message = "Player jumped";
-    await informBackend(true, message);
+    await BackendCommunicator.informBackend(true, message)
+                             .then(data => console.log(data))
+                             .catch(error => console.error(error));
 
     mario.classList.add('jump');
 
@@ -31,7 +31,10 @@ export async function loop(pipe, mario){
             mario.src = './img/game-over.png';
             mario.style.width = '75px';
             mario.style.marginLeft = '50px';
-            informBackend(false, 'Player Died x.x');
+            backendCommunicator.informBackend(false, 'Player Died x.x')
+                               .then(data => console.log(data))
+                               .catch(error => console.error(error));
+
             resetScore();
     
             clearInterval(loop);
@@ -44,13 +47,13 @@ export async function loop(pipe, mario){
 
 
 
-export function runGame(gameType){
+function runGame(gameType){
 
     const pipe = document.querySelector('.pipe');
-    const highScore = getHighScoreFromCookie(); //isso aqui vai pro banco de dados do servidor conectado ao historico do player/user;
+    const highScoreOne = getHighScoreFromCookie(); //isso aqui vai pro banco de dados do servidor conectado ao historico do player/user;
     const marioOne = document.querySelector('.mario-1');
     
-    document.getElementById('high-score-1').innerText = highScore;
+    document.getElementById('high-score-1').innerText = highScoreOne;
     loop(pipe, marioOne);
     
     if (gameType === "multi") {
@@ -62,19 +65,38 @@ export function runGame(gameType){
     // Attach event listener for the jump action
     document.addEventListener('keydown', jump);
 
+    
+
 }
 
 
+function checkGameType(){
+    const pageTitle = document.title;
+    let gameType = '';
 
-function startGame(gameType) {
+    // Check if the title contains "Single"
+    if (pageTitle.includes('Single')) {
+        gameType = 'single'
+    } else if (pageTitle.includes('Multi')) {   
+        gameType = 'multi'
+    }
 
+    return gameType;
+
+}
+
+
+async function startGame() {
+    
+    const gameType = checkGameType();
     resetScore();
     // Use the gameType variable in your game logic
     console.log(`Starting ${gameType} player game...`);
 
     // Example: Notify the backend about the chosen game type
-    informBackendGameType(gameType);
-
+    //informBackendGameType(gameType);
     runGame(gameType)
 
 }
+
+startGame()

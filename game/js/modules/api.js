@@ -45,10 +45,4 @@ class BackendCommunicator {
     }
 }
 
-export default backendCommunicator;
-
-// Example Usage:
-const backendCommunicator = new BackendCommunicator('http://localhost:3000');
-backendCommunicator.informBackend('press', 'Hello, server!')
-    .then(data => console.log(data))
-    .catch(error => console.error(error));
+export default BackendCommunicator;
